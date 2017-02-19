@@ -4,6 +4,10 @@
 
   {% for p in posts %}
     {{ p.render() | safe }}
+    {% if user %}
+    	<a href="/edit">edit</a>
+    {% endif %}
+
     <br><br>
   {% endfor %}
 

@@ -50,14 +50,14 @@ label + label {
 }
 
 input[type=text] {
-    width: 500px;
+    width: 90%;
     font-size: 20px;
     padding: 2px;
     font-family: monospace;
 }
 
 textarea {
-  width: 500px;
+  width: 90%;
   height: 400px;
   font-size: 17px;
   font-family: monospace;
@@ -75,6 +75,15 @@ input[type=submit] {
     text-align: center;
     margin-bottom: 30px;
     text-decoration: none;
+}
+
+.sub-title {
+    display: block;
+    color: #222;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: bold;
+
 }
 
 .post + .post {
