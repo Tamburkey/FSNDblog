@@ -5,7 +5,7 @@
   {% for p in posts %}
     {{ p.render() | safe }}
     {% if user %}
-    	<a href="/edit">edit</a>
+    	<a href="/edit/{{p.key().id()}}">Edit Post</a>
     {% endif %}
 
     <br><br>
