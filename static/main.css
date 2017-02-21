@@ -81,9 +81,13 @@ input[type=submit] {
     display: block;
     color: #222;
     margin-bottom: 30px;
-    text-align: center;
+    text-align: left;
     font-weight: bold;
+    text-decoration: none;
+}
 
+.sub-title:hover {
+    text-decoration: underline;
 }
 
 .post + .post {
@@ -98,6 +102,12 @@ input[type=submit] {
 .post-title {
     font-size: 24px;
     font-weight: bold;
+    text-decoration: none;
+    color: green;
+}
+
+.post-title:hover {
+    text-decoration: underline;
 }
 
 .post-date {
@@ -133,4 +143,12 @@ legend {
     width: 102px;
     margin-bottom: 0px;
     margin-left: 82.3%;
+}
+
+.creator {
+    padding: 15px;
+}
+
+.return {
+    margin-left: 85%;
 }

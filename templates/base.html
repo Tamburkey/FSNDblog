@@ -3,19 +3,13 @@
 <head>
   <link type="text/css" rel="stylesheet" href="/static/main.css" />
 
-  <title>BLOG</title>
+  <title>Seenit</title>
 </head>
 
 <body>
   <a href="/" class="main-title">
-    BLOG
+    Seenit
   </a>
-  {% if user %}
-    <a href="/newpost" class = "sub-title">
-      Create new post
-    </a>
-  {% endif %}
-
   <div class="login-area">
     {% if user %}
       {{user.name}} (<a class="login-link" href="/logout">logout</a>)

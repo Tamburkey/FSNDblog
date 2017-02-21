@@ -139,6 +139,8 @@ class Post(db.Model):
     content = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
+    comment = db.StringProperty()
+    creator = db.StringProperty()
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
@@ -160,6 +162,19 @@ class PostPage(BlogHandler):
 
         self.render("permalink.html", post = post)
 
+    def post(self, post_id):
+        if not self.user:
+            self.redirect('/')
+
+        comment = self.request.get('comment')
+
+        if comment:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            post.comment = post.comment + comment
+            post.put()
+            self.redirect('/%s' % str(post.key().id()))
+
 class NewPost(BlogHandler):
     def get(self):
         if self.user:
@@ -173,9 +188,10 @@ class NewPost(BlogHandler):
 
         subject = self.request.get('subject')
         content = self.request.get('content')
+        creator = self.user.name
 
-        if subject and content:
-            p = Post(parent = blog_key(), subject = subject, content = content)
+        if subject and content and creator:
+            p = Post(parent = blog_key(), subject = subject, content = content, creator = creator)
             p.put()
             self.redirect('/%s' % str(p.key().id()))
         else:
@@ -270,7 +286,6 @@ class EditPost(BlogHandler):
         else:
             self.redirect("/login")
 
-
     def post(self, post_id):
         if not self.user:
             self.redirect('/')
@@ -289,6 +304,27 @@ class EditPost(BlogHandler):
             error = "subject and content, please!"
             self.render("editpost.html", subject=subject, content=content, error=error)
 
+class DeletePost(BlogHandler):
+    def get(self, post_id):
+        if self.user:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            self.render("deletepost.html", post = post)
+        else:
+            self.redirect("/login")
+    def post(self, post_id):
+        if not self.user:
+            self.redirect('/')
+
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+        post.delete()
+        self.redirect('/')
+
+
+
+
+
 
 app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/([0-9]+)', PostPage),
@@ -297,6 +333,7 @@ app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/login', Login),
                                ('/logout', Logout),
                                ('/welcome', BlogWelcome),
-                               ('/edit/([0-9]+)', EditPost)
+                               ('/edit/([0-9]+)', EditPost),
+                               ('/delete/([0-9]+)', DeletePost)
                                ],
                               debug=True)

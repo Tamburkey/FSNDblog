@@ -6,12 +6,10 @@
 	<div class="creator">
 		Posted by:{{post.creator}}
 	</div>
-	{% if post.comment %}
-		<br>
-  		{{post.comment}}
-	{% endif %}
 	<form method="post">
-    	<input type="submit" value="Delete Post">
+		<label>
+    		<div>Confirm Delete</div>
+    	</label>
+    	<input type="submit" value="delete">
     </form>
-    <a href="/" class="return">Return </a>
 {% endblock %}

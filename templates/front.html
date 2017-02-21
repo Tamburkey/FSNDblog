@@ -1,16 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% if user %}
+	<a href="/newpost" class="sub-title">
+		Submit New Post
+    </a>
+{% endif %}
+
 <legend>Created | Modified</legend>
 
   {% for p in posts %}
     {{ p.render() | safe }}
-    {% if user %}
+    {% if user.name == p.creator %}
     	<a class="edit-button" href="/edit/{{p.key().id()}}">
     		Edit
     	</a>
     {% endif %}
-
+    <div class="creator">
+		Posted by: {{p.creator}}
+	</div>
     <br><br>
   {% endfor %}
 
