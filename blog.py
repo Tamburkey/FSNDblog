@@ -29,6 +29,8 @@ EMAIL_RE  = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
 def valid_email(email):
     return not email or EMAIL_RE.match(email)
 
+
+
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
@@ -229,7 +231,7 @@ class Register(Signup):
             u.put()
 
             self.login(u)
-            self.redirect('/')
+            self.redirect('/welcome')
 
 class Login(BlogHandler):
     def get(self):

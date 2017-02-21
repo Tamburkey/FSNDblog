@@ -105,10 +105,32 @@ input[type=submit] {
     right: 0px;
     bottom: 0px;
     color: #999;
-
 }
 
+.edit-date {
+    position: absolute;
+    right: 120px;
+    bottom: 0px;
+}
+
+.edit-button {
+    text-decoration: none;
+    position: absolute;
+    right: 20px;
+    color: black;
+}
+
+.edit-button:hover {
+    text-decoration: underline;
+}
 .post-content {
     margin-top: 5px;
 }
 
+legend {
+    display: block;
+    font-size: 12px;
+    width: 102px;
+    margin-bottom: 0px;
+    margin-left: 82.3%;
+}

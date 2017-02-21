@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+<legend>Created | Modified</legend>
 
   {% for p in posts %}
     {{ p.render() | safe }}
     {% if user %}
-    	<a href="/edit/{{p.key().id()}}">Edit Post</a>
+    	<a class="edit-button" href="/edit/{{p.key().id()}}">
+    		Edit
+    	</a>
     {% endif %}
 
     <br><br>
