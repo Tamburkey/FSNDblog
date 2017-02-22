@@ -1,19 +1,31 @@
 <div class="post">
-  <div class="post-heading">
-    <a href="/{{p.key().id()}}" class="post-title">
-      {{p.subject}}
+  <div class="like">
+    <a href="/like/{{p.key().id()}}" >
+        <img class="like" src="http://www.itaiboublil.com/wp-content/uploads/2010/05/463px-Symbol_thumbs_up.png" alt="thumbs up icon">
     </a>
-    <span class="creator">
-      Posted by: {{p.creator}}
-    </span>
-
-    <div class="post-date">
-      {{p.created.strftime("%b %d, %Y")}} | 
-      {{p.last_modified.strftime("%b %d, %Y")}}
+  </div>
+  <div class="post-body">
+    <div class="post-heading">
+      <a href="/{{p.key().id()}}" class="post-title">
+        {{p.subject}}
+      </a>
+    </div>
+    <div class="post-content">
+      {{p._render_text | safe}}
     </div>
   </div>
-
-  <div class="post-content">
-    {{p._render_text | safe}}
+  <div class="post-info">
+    <div class="post-date">
+      Created: {{p.created.strftime("%b %d, %Y")}}
+    </div>
+    <div class="post-date">
+      Modified: {{p.last_modified.strftime("%b %d, %Y")}}
+    </div>
+    <div class="creator">
+      Posted by: {{p.creator}}
+    </div>
+    <div class="likecount">
+      Likes: {{p.likes}}
+    </div>
   </div>
 </div>

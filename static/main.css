@@ -3,7 +3,7 @@ body {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 14px;
 
-    width: 800px;
+    width: 80%;
     margin: 0 auto;
     padding: 10px;
     color: #333;
@@ -73,15 +73,6 @@ input[type=submit] {
     font-size: 40px;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 30px;
-    text-decoration: none;
-}
-
-.sub-title {
-    display: block;
-    color: #222;
-    text-align: left;
-    font-weight: bold;
     text-decoration: none;
 }
 
@@ -91,7 +82,7 @@ input[type=submit] {
 
 .post-heading {
     position: relative;
-    border-bottom: 3px solid #666;
+    border-bottom: 1px dotted #666;
 }
 
 .post-title {
@@ -102,9 +93,6 @@ input[type=submit] {
 }
 
 .post-date {
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
     color: #999;
 }
 
@@ -114,9 +102,7 @@ input[type=submit] {
     bottom: 0px;
 }
 
-.edit-button:hover,
-.delete:hover, 
-.return:hover,
+.button:hover,
 .post-title:hover,
 .sub-title:hover,
 .main-title:hover {
@@ -124,23 +110,39 @@ input[type=submit] {
 }
 .post-content {
     margin-top: 5px;
-}
-
-legend {
-    display: block;
-    font-size: 12px;
-    width: 102px;
-    margin-bottom: 0px;
-    margin-left: 82.3%;
+    padding-bottom: 5px;
 }
 
 .creator {
     color: #0b770e;
 }
 
-.return,
-.delete,
-.edit-button {
+.button {
+    display: inline-block;
+    padding: 10px;
     text-decoration: none;
     color: black;
+}
+
+.post {
+    display: flex;
+    border-bottom: 3px solid black;
+}
+
+.like {
+    width: 40px;
+    height: 40px;
+    padding-right: 10px;    
+}
+
+.post-body {
+    width: 100%;
+    flex-grow: 2; 
+}
+
+.post-info {
+    flex-grow: 1;
+    text-align: right;
+    min-width: 180px;
+    
 }

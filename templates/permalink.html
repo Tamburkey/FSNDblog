@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<legend>Created | Modified</legend>
 	{{post.render() | safe}}
+	<div>
 		{% if user.name == post.creator %}
-		<a href="/delete/{{post.key().id()}}" class="delete">
-		Delete Post
-		</a>
-    	<a class="edit-button" href="/edit/{{post.key().id()}}">
-    		Edit Post
-    	</a>
+			<a class="button" href="/delete/{{post.key().id()}}">
+				Delete Post
+			</a>
+    		<a class="button" href="/edit/{{post.key().id()}}">
+    			Edit Post
+    		</a>
 		{% endif %}
-    <a href="/" class="return">Return</a>
+    	<a class="button" href="/">Return</a>
+    </div>
 {% endblock %}

@@ -1,17 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-{% if user %}
-	<a href="/newpost" class="sub-title">
-		Submit New Post
-    </a>
-{% endif %}
-
-<legend>Created | Modified</legend>
-
   {% for p in posts %}
-    {{ p.render() | safe }}
+  	{{ p.render() | safe }}
   {% endfor %}
-
 {% endblock %}

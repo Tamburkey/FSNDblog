@@ -29,8 +29,6 @@ EMAIL_RE  = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
 def valid_email(email):
     return not email or EMAIL_RE.match(email)
 
-
-
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
@@ -74,10 +72,6 @@ class BlogHandler(webapp2.RequestHandler):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
-
-def render_post(response, post):
-    response.out.write('<b>' + post.subject + '</b><br>')
-    response.out.write(post.content)
 
 ##### user stuff
 def make_salt(length = 5):
@@ -136,6 +130,7 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
     creator = db.StringProperty(required = True)
+    likes = db.IntegerProperty()
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
@@ -184,9 +179,10 @@ class NewPost(BlogHandler):
         subject = self.request.get('subject')
         content = self.request.get('content')
         creator = self.user.name
+        likes = 0
 
         if subject and content and creator:
-            p = Post(parent = blog_key(), subject = subject, content = content, creator = creator)
+            p = Post(parent = blog_key(), subject = subject, content = content, creator = creator, likes = likes)
             p.put()
             self.redirect('/%s' % str(p.key().id()))
         else:
@@ -312,8 +308,28 @@ class DeletePost(BlogHandler):
             self.redirect('/')
 
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        db.delete(key)
-        self.redirect('/')
+        post = db.get(key)
+        post.delete()
+        self.redirect('/deleted')
+
+class Deleted(BlogHandler):
+    def get(self):
+        self.render('deleted.html')
+
+class Like(BlogHandler):
+    def get(self, post_id):
+        if self.user:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            if not post.likes:
+                post.likes = 0
+            post.likes += 1
+            post.put()
+            self.redirect('/%s' % str(post.key().id()))
+
+        else:
+            self.redirect("/login")
+
 
 app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/([0-9]+)', PostPage),
@@ -323,6 +339,8 @@ app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/logout', Logout),
                                ('/welcome', BlogWelcome),
                                ('/edit/([0-9]+)', EditPost),
-                               ('/delete/([0-9]+)', DeletePost)
+                               ('/delete/([0-9]+)', DeletePost),
+                               ('/deleted', Deleted),
+                               ('/like/([0-9]+)', Like)
                                ],
                               debug=True)

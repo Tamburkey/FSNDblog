@@ -1,11 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<legend>Created | Modified</legend>
 	{{post.render() | safe}}
-	<div class="creator">
-		Posted by:{{post.creator}}
-	</div>
 	<form method="post">
     	<input type="submit" value="Confirm Delete">
     </form>
