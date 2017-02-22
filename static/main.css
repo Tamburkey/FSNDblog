@@ -80,14 +80,9 @@ input[type=submit] {
 .sub-title {
     display: block;
     color: #222;
-    margin-bottom: 30px;
     text-align: left;
     font-weight: bold;
     text-decoration: none;
-}
-
-.sub-title:hover {
-    text-decoration: underline;
 }
 
 .post + .post {
@@ -106,10 +101,6 @@ input[type=submit] {
     color: green;
 }
 
-.post-title:hover {
-    text-decoration: underline;
-}
-
 .post-date {
     position: absolute;
     right: 0px;
@@ -123,14 +114,12 @@ input[type=submit] {
     bottom: 0px;
 }
 
-.edit-button {
-    text-decoration: none;
-    position: absolute;
-    right: 20px;
-    color: black;
-}
-
-.edit-button:hover {
+.edit-button:hover,
+.delete:hover, 
+.return:hover,
+.post-title:hover,
+.sub-title:hover,
+.main-title:hover {
     text-decoration: underline;
 }
 .post-content {
@@ -146,9 +135,12 @@ legend {
 }
 
 .creator {
-    padding: 15px;
+    color: #0b770e;
 }
 
-.return {
-    margin-left: 85%;
+.return,
+.delete,
+.edit-button {
+    text-decoration: none;
+    color: black;
 }

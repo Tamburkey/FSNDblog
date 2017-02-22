@@ -79,10 +79,6 @@ def render_post(response, post):
     response.out.write('<b>' + post.subject + '</b><br>')
     response.out.write(post.content)
 
-class MainPage(BlogHandler):
-  def get(self):
-      self.redirect('/blog/')
-
 ##### user stuff
 def make_salt(length = 5):
     return ''.join(random.choice(letters) for x in xrange(length))
@@ -139,8 +135,7 @@ class Post(db.Model):
     content = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
-    comment = db.StringProperty()
-    creator = db.StringProperty()
+    creator = db.StringProperty(required = True)
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
@@ -148,7 +143,7 @@ class Post(db.Model):
 
 class BlogFront(BlogHandler):
     def get(self):
-        posts = db.GqlQuery("select * from Post order by created desc limit 10")
+        posts = db.GqlQuery("select * from Post order by last_modified desc limit 10")
         self.render('front.html', posts = posts)
 
 class PostPage(BlogHandler):
@@ -317,14 +312,8 @@ class DeletePost(BlogHandler):
             self.redirect('/')
 
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        post = db.get(key)
-        post.delete()
+        db.delete(key)
         self.redirect('/')
-
-
-
-
-
 
 app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/([0-9]+)', PostPage),

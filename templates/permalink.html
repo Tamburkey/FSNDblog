@@ -3,15 +3,13 @@
 {% block content %}
 	<legend>Created | Modified</legend>
 	{{post.render() | safe}}
-	<div class="creator">
-		Posted by:{{post.creator}}
-	</div>
-	{% if post.comment %}
-		<br>
-  		{{post.comment}}
-	{% endif %}
-	<form method="post">
-    	<input type="submit" value="Delete Post">
-    </form>
-    <a href="/" class="return">Return </a>
+		{% if user.name == post.creator %}
+		<a href="/delete/{{post.key().id()}}" class="delete">
+		Delete Post
+		</a>
+    	<a class="edit-button" href="/edit/{{post.key().id()}}">
+    		Edit Post
+    	</a>
+		{% endif %}
+    <a href="/" class="return">Return</a>
 {% endblock %}

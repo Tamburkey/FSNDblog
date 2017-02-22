@@ -3,6 +3,9 @@
     <a href="/{{p.key().id()}}" class="post-title">
       {{p.subject}}
     </a>
+    <span class="creator">
+      Posted by: {{p.creator}}
+    </span>
 
     <div class="post-date">
       {{p.created.strftime("%b %d, %Y")}} | 

@@ -12,15 +12,6 @@
 
   {% for p in posts %}
     {{ p.render() | safe }}
-    {% if user.name == p.creator %}
-    	<a class="edit-button" href="/edit/{{p.key().id()}}">
-    		Edit
-    	</a>
-    {% endif %}
-    <div class="creator">
-		Posted by: {{p.creator}}
-	</div>
-    <br><br>
   {% endfor %}
 
 {% endblock %}
