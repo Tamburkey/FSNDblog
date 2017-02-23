@@ -136,6 +136,14 @@ class Post(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p = self)
 
+class Comment(db.Model):
+    comment = db.StringProperty()
+    post_id = db.StringProperty()
+    creator = db.StringProperty()
+    created = db.DateTimeProperty(auto_now_add = True)
+    last_modified = db.DateTimeProperty(auto_now = True)
+
+
 class BlogFront(BlogHandler):
     def get(self):
         posts = db.GqlQuery("select * from Post order by last_modified desc limit 10")
@@ -145,12 +153,13 @@ class PostPage(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+        comments = db.GqlQuery("select * from Comment order by last_modified")
 
         if not post:
             self.error(404)
             return
 
-        self.render("permalink.html", post = post)
+        self.render("permalink.html", post = post, comments=comments, post_id = str(post.key().id()))
 
     def post(self, post_id):
         if not self.user:
@@ -159,11 +168,22 @@ class PostPage(BlogHandler):
         comment = self.request.get('comment')
 
         if comment:
+            comments = db.GqlQuery("select * from Comment order by last_modified")
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
-            post.comment = post.comment + comment
-            post.put()
+            post_id = str(post.key().id())
+            creator = self.user.name
+            c = Comment(comment=comment, post_id=post_id, creator=creator)
+            c.put()
             self.redirect('/%s' % str(post.key().id()))
+            self.redirect('/')
+            self.redirect('/%s' % str(post.key().id()))
+        else:
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            self.redirect('/%s' % str(post.key().id()))
+
+
 
 class NewPost(BlogHandler):
     def get(self):
@@ -182,7 +202,7 @@ class NewPost(BlogHandler):
         likes = 0
 
         if subject and content and creator:
-            p = Post(parent = blog_key(), subject = subject, content = content, creator = creator, likes = likes)
+            p = Post(parent = blog_key(), subject=subject, content=content, creator=creator, likes=likes)
             p.put()
             self.redirect('/%s' % str(p.key().id()))
         else:

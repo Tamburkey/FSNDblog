@@ -43,6 +43,7 @@ h2 {
 label {
   display: block;
   font-size: 20px;
+  margin-bottom: 10px;
 }
 
 label + label {
@@ -127,6 +128,7 @@ input[type=submit] {
 .post {
     display: flex;
     border-bottom: 3px solid black;
+    margin-bottom: 15px;
 }
 
 .like {
