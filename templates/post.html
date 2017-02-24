@@ -1,8 +1,11 @@
 <div class="post">
   <div class="like">
     <a href="/like/{{p.key().id()}}" >
-        <img class="like" src="http://www.itaiboublil.com/wp-content/uploads/2010/05/463px-Symbol_thumbs_up.png" alt="thumbs up icon">
+        <img class="like-img" src="static/images/thumbsup.png">
     </a>
+    <div class="like-count">
+      Likes: {{p.likes}}
+    </div>
   </div>
   <div class="post-body">
     <div class="post-heading">
@@ -24,8 +27,8 @@
     <div class="creator">
       Posted by: {{p.creator}}
     </div>
-    <div class="likecount">
-      Likes: {{p.likes}}
+    <div class="comment-count">
+      Comments: {{p.comment_count}}
     </div>
   </div>
 </div>

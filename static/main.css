@@ -44,6 +44,7 @@ label {
   display: block;
   font-size: 20px;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 label + label {
@@ -75,6 +76,8 @@ input[type=submit] {
     font-weight: bold;
     text-align: center;
     text-decoration: none;
+    margin-bottom: 10px;
+    border-bottom: solid green;
 }
 
 .post + .post {
@@ -116,11 +119,11 @@ input[type=submit] {
 
 .creator {
     color: #0b770e;
+    margin-left: 5%;
 }
 
 .button {
-    display: inline-block;
-    padding: 10px;
+    padding: 5px;
     text-decoration: none;
     color: black;
 }
@@ -129,12 +132,18 @@ input[type=submit] {
     display: flex;
     border-bottom: 3px solid black;
     margin-bottom: 15px;
+    min-height: 95px;
 }
 
 .like {
-    width: 40px;
-    height: 40px;
-    padding-right: 10px;    
+    width: 85px;
+    height: 55px;
+    padding-right: 10px; 
+    text-align: center;   
+}
+
+.like-img {
+    width: 65px;
 }
 
 .post-body {
@@ -147,4 +156,28 @@ input[type=submit] {
     text-align: right;
     min-width: 180px;
     
+}
+
+.comment {
+    margin-left: 10%;
+    padding: 10px;
+}
+
+.post-edit {
+    text-align: right;
+    padding: 10px;
+}
+.comment-edit {
+    text-align: right;
+}
+
+.new-post {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.input-comment {
+    width:100%;
+    text-align: center;
 }

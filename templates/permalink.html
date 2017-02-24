@@ -2,28 +2,57 @@
 
 {% block content %}
 	{{post.render() | safe}}
+	{% if user.name == post.creator %}
+		<div class="post-edit">
+			<a class="button" href="/delete/{{post.key().id()}}">
+				Delete
+			</a>
+			/
+    		<a class="button" href="/edit/{{post.key().id()}}">
+    			Edit
+    		</a>
+    		Post
+    	</div>
+	{% endif %}
 	{% for c in comments %}
-		{% if c.post_id == post.key().id() %}
-			<div>{{c.comment}}</div>
+		{% if c.comment_post_id == post_id %}
+			<div class="comment">
+				<div class="comment-content">
+					{{c.comment}}
+				</div>
+				<div class="creator">
+					Posted by: {{c.creator}} on {{c.created.strftime("%b %d, %Y")}}
+				</div>
+				{% if user.name == c.creator %}
+				<div class="comment-edit">
+					<a class="button" href="/deletecomment/
+					{{post.key().id()}}/
+					{{c.key().id()}}">
+						Delete
+					</a>
+					/
+					<a class="button" href="/editcomment/
+					{{post.key().id()}}/
+					{{c.key().id()}}">
+    					Edit
+    				</a>
+    				Comment
+    			</div>
+				{% endif %}
+			</div>
 		{% endif %}
 	{% endfor %}
 	{% if user %}
-		<form method="post">
-     	<label>
-        	<input type="text" name="comment" value="{{comment}}">
-     	</label>
-      	<input type="submit" value="Post Comment">
-    	</form>
+		<div class="input-comment">
+			<form method="post">
+     		<label>
+        		<input type="text" name="comment" value="{{comment}}">
+     		</label>
+      		<input type="submit" value="Post Comment">
+    		</form>
+    	</div>
 	{% endif %}
 	<div>
-		{% if user.name == post.creator %}
-			<a class="button" href="/delete/{{post.key().id()}}">
-				Delete Post
-			</a>
-    		<a class="button" href="/edit/{{post.key().id()}}">
-    			Edit Post
-    		</a>
-		{% endif %}
     		<a class="button" href="/">
     			Return
     		</a>

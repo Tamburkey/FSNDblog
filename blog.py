@@ -131,6 +131,7 @@ class Post(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
     creator = db.StringProperty(required = True)
     likes = db.IntegerProperty()
+    comment_count = db.IntegerProperty()
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
@@ -138,7 +139,7 @@ class Post(db.Model):
 
 class Comment(db.Model):
     comment = db.StringProperty()
-    post_id = db.StringProperty()
+    comment_post_id = db.StringProperty()
     creator = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
@@ -147,13 +148,14 @@ class Comment(db.Model):
 class BlogFront(BlogHandler):
     def get(self):
         posts = db.GqlQuery("select * from Post order by last_modified desc limit 10")
-        self.render('front.html', posts = posts)
+        comments = db.GqlQuery("select * from Comment order by created")
+        self.render('front.html', posts = posts, comments = comments)
 
 class PostPage(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
-        comments = db.GqlQuery("select * from Comment order by last_modified")
+        comments = db.GqlQuery("select * from Comment order by created")
 
         if not post:
             self.error(404)
@@ -168,15 +170,16 @@ class PostPage(BlogHandler):
         comment = self.request.get('comment')
 
         if comment:
-            comments = db.GqlQuery("select * from Comment order by last_modified")
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
-            post_id = str(post.key().id())
+            if not post.comment_count:
+                post.comment_count = 0
+            post.comment_count += 1
+            post.put()
+            comment_post_id = str(post.key().id())
             creator = self.user.name
-            c = Comment(comment=comment, post_id=post_id, creator=creator)
+            c = Comment(comment=comment, comment_post_id=comment_post_id, creator=creator)
             c.put()
-            self.redirect('/%s' % str(post.key().id()))
-            self.redirect('/')
             self.redirect('/%s' % str(post.key().id()))
         else:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
@@ -313,7 +316,9 @@ class EditPost(BlogHandler):
             self.redirect('/%s' % str(post.key().id()))
         else:
             error = "subject and content, please!"
-            self.render("editpost.html", subject=subject, content=content, error=error)
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            self.render("editpost.html", p=post, subject=subject, content=content, error=error)
 
 class DeletePost(BlogHandler):
     def get(self, post_id):
@@ -329,6 +334,12 @@ class DeletePost(BlogHandler):
 
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+
+        comments = db.GqlQuery("select * from Comment order by created")
+        for c in comments:
+            if c.comment_post_id == key:
+                c.delete()
+
         post.delete()
         self.redirect('/deleted')
 
@@ -343,12 +354,55 @@ class Like(BlogHandler):
             post = db.get(key)
             if not post.likes:
                 post.likes = 0
-            post.likes += 1
-            post.put()
-            self.redirect('/%s' % str(post.key().id()))
+            if self.user.name != post.creator:
+                post.likes += 1
+                post.put()
+                self.redirect('/')
+            else:
+                ##currently user is not told about the error
+                error = "Cannot like your own posts"
+                self.redirect('/')
 
         else:
             self.redirect("/login")
+
+class DeleteComment(BlogHandler):
+    def get(self, post_id, comment_id):
+        key = db.Key.from_path('Comment', int(comment_id))
+        comment = db.get(key)
+        self.render('deletecomment.html', comment=comment)
+
+    def post(self, post_id, comment_id):
+        p_key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(p_key)
+        post.comment_count -= 1
+        post.put()
+        c_key = db.Key.from_path('Comment', int(comment_id))
+        comment = db.get(c_key)
+        comment.delete()
+        self.redirect('/deleted')
+
+class EditComment(BlogHandler):
+    def get(self, post_id, comment_id):
+        key = db.Key.from_path('Comment', int(comment_id))
+        comment = db.get(key)
+        self.render('editcomment.html', comment=comment)
+
+    def post(self, post_id, comment_id):
+        comment_content = self.request.get('comment-content')
+        if comment_content:
+            key = db.Key.from_path('Comment', int(comment_id))
+            comment = db.get(key)
+            comment_content = self.request.get('comment-content')
+            comment.comment = comment_content
+            comment.put()
+            self.redirect('/deleted')
+        else:
+            error = "Cannot leave blank comments!"
+            key = db.Key.from_path('Comment', int(comment_id))
+            comment = db.get(key)
+            self.render("editcomment.html", comment=comment, error=error)
+
 
 
 app = webapp2.WSGIApplication([('/', BlogFront),
@@ -361,6 +415,8 @@ app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/edit/([0-9]+)', EditPost),
                                ('/delete/([0-9]+)', DeletePost),
                                ('/deleted', Deleted),
-                               ('/like/([0-9]+)', Like)
+                               ('/like/([0-9]+)', Like),
+                               ('/deletecomment/([0-9]+)/([0-9]+)', DeleteComment),
+                               ('/editcomment/([0-9]+)/([0-9]+)', EditComment)
                                ],
                               debug=True)

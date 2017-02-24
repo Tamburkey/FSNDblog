@@ -22,15 +22,17 @@
       </a>
     {% endif %}
   </div>
+  {% if user %}
+    <div class="new-post">
+      <a href="/newpost" class="button">
+        Submit New Post
+      </a>
+    </div>
+  {% endif %}
   <div id="content">
   {% block content %}
   {% endblock %}
   </div>
-  {% if user %}
-    <a href="/newpost" class="button">
-      Submit New Post
-    </a>
-  {% endif %}
 </body>
 
 </html>

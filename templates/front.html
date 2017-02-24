@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+<div class="error">{{error}}</div>
 {% block content %}
   {% for p in posts %}
   	{{ p.render() | safe }}
