@@ -18,28 +18,38 @@ secret = 'fart'
 
 # Regex functions to validate user/pass/email
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+
+
 def valid_username(username):
     return username and USER_RE.match(username)
 
 PASS_RE = re.compile(r"^.{3,20}$")
+
+
 def valid_password(password):
     return password and PASS_RE.match(password)
 
-EMAIL_RE  = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
+EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
+
+
 def valid_email(email):
     return not email or EMAIL_RE.match(email)
+
 
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
+
 def make_secure_val(val):
     return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
+
 
 def check_secure_val(secure_val):
     val = secure_val.split('|')[0]
     if secure_val == make_secure_val(val):
         return val
+
 
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -73,9 +83,11 @@ class BlogHandler(webapp2.RequestHandler):
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
 
-##### user stuff
+
+# user stuff
 def make_salt(length = 5):
     return ''.join(random.choice(letters) for x in xrange(length))
+
 
 def make_pw_hash(name, pw, salt = None):
     if not salt:
@@ -83,12 +95,15 @@ def make_pw_hash(name, pw, salt = None):
     h = hashlib.sha256(name + pw + salt).hexdigest()
     return '%s,%s' % (salt, h)
 
+
 def valid_pw(name, password, h):
     salt = h.split(',')[0]
     return h == make_pw_hash(name, password, salt)
 
+
 def users_key(group = 'default'):
     return db.Key.from_path('users', group)
+
 
 class User(db.Model):
     name = db.StringProperty(required = True)
@@ -119,9 +134,11 @@ class User(db.Model):
         if u and valid_pw(name, pw, u.pw_hash):
             return u
 
-##### blog stuff
+
+# blog stuff
 def blog_key(name = 'default'):
     return db.Key.from_path('blogs', name)
+
 
 class Post(db.Model):
     subject = db.StringProperty(required = True)
@@ -136,6 +153,7 @@ class Post(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p = self)
 
+
 class Comment(db.Model):
     comment = db.StringProperty()
     comment_post_id = db.StringProperty()
@@ -143,11 +161,14 @@ class Comment(db.Model):
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
 
+
 class BlogFront(BlogHandler):
     def get(self):
-        posts = db.GqlQuery("select * from Post order by last_modified desc limit 10")
+        posts = db.GqlQuery("select * from Post order by last_modified \
+                            desc limit 10")
         comments = db.GqlQuery("select * from Comment order by created")
         self.render('front.html', posts = posts, comments = comments)
+
 
 class PostPage(BlogHandler):
     def get(self, post_id):
@@ -159,7 +180,8 @@ class PostPage(BlogHandler):
             self.error(404)
             return
 
-        self.render("permalink.html", post = post, comments=comments, post_id = str(post.key().id()))
+        self.render("permalink.html", post = post, comments=comments,
+                    post_id = str(post.key().id()))
 
     def post(self, post_id):
         if not self.user:
@@ -176,13 +198,15 @@ class PostPage(BlogHandler):
             post.put()
             comment_post_id = str(post.key().id())
             creator = self.user.name
-            c = Comment(comment=comment, comment_post_id=comment_post_id, creator=creator)
+            c = Comment(comment=comment, comment_post_id=comment_post_id,
+                        creator=creator)
             c.put()
             self.redirect('/completed')
         else:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
             self.redirect('/%s' % str(post.key().id()))
+
 
 class NewPost(BlogHandler):
     def get(self):
@@ -201,12 +225,15 @@ class NewPost(BlogHandler):
         likes = 0
 
         if subject and content and creator:
-            p = Post(parent = blog_key(), subject=subject, content=content, creator=creator, likes=likes)
+            p = Post(parent = blog_key(), subject=subject,
+                        content=content, creator=creator, likes=likes)
             p.put()
             self.redirect('/%s' % str(p.key().id()))
         else:
             error = "subject and content, please!"
-            self.render("newpost.html", subject=subject, content=content, error=error)
+            self.render("newpost.html", subject=subject,
+                        content=content, error=error)
+
 
 class Signup(BlogHandler):
     def get(self):
@@ -245,9 +272,10 @@ class Signup(BlogHandler):
     def done(self, *a, **kw):
         raise NotImplementedError
 
+
 class Register(Signup):
     def done(self):
-        #make sure the user doesn't already exist
+        # make sure the user doesn't already exist
         u = User.by_name(self.username)
         if u:
             msg = 'That user already exists.'
@@ -258,6 +286,7 @@ class Register(Signup):
 
             self.login(u)
             self.redirect('/welcome')
+
 
 class Login(BlogHandler):
     def get(self):
@@ -275,10 +304,12 @@ class Login(BlogHandler):
             msg = 'Invalid login'
             self.render('login-form.html', error = msg)
 
+
 class Logout(BlogHandler):
     def get(self):
         self.logout()
         self.redirect('/')
+
 
 class BlogWelcome(BlogHandler):
     def get(self):
@@ -286,6 +317,7 @@ class BlogWelcome(BlogHandler):
             self.render('welcome.html', username = self.user.name)
         else:
             self.redirect('/signup')
+
 
 class EditPost(BlogHandler):
     def get(self, post_id):
@@ -314,7 +346,9 @@ class EditPost(BlogHandler):
             error = "subject and content, please!"
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
-            self.render("editpost.html", p=post, subject=subject, content=content, error=error)
+            self.render("editpost.html", p=post, subject=subject,
+                        content=content, error=error)
+
 
 class DeletePost(BlogHandler):
     def get(self, post_id):
@@ -324,6 +358,7 @@ class DeletePost(BlogHandler):
             self.render("deletepost.html", post = post)
         else:
             self.redirect("/login")
+
     def post(self, post_id):
         if not self.user:
             self.redirect('/')
@@ -339,13 +374,16 @@ class DeletePost(BlogHandler):
         post.delete()
         self.redirect('/completed')
 
+
 class Completed(BlogHandler):
     def get(self):
         self.render('completed.html')
 
+
 class Failed(BlogHandler):
     def get(self):
         self.render('failed.html')
+
 
 class Like(BlogHandler):
     def get(self, post_id):
@@ -354,7 +392,8 @@ class Like(BlogHandler):
             post = db.get(key)
             if not post.likes:
                 post.likes = 0
-            if self.user.name != post.creator and str(post.key().id()) not in self.user.liked:
+            if self.user.name != post.creator and \
+                    str(post.key().id()) not in self.user.liked:
                 post.likes += 1
                 self.user.liked += str(post.key().id()) + ','
                 self.user.put()
@@ -369,6 +408,7 @@ class Like(BlogHandler):
 
         else:
             self.redirect("/login")
+
 
 class DeleteComment(BlogHandler):
     def get(self, post_id, comment_id):
@@ -385,6 +425,7 @@ class DeleteComment(BlogHandler):
         comment = db.get(c_key)
         comment.delete()
         self.redirect('/completed')
+
 
 class EditComment(BlogHandler):
     def get(self, post_id, comment_id):
@@ -407,6 +448,7 @@ class EditComment(BlogHandler):
             comment = db.get(key)
             self.render("editcomment.html", comment=comment, error=error)
 
+
 app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/([0-9]+)', PostPage),
                                ('/newpost', NewPost),
@@ -418,7 +460,8 @@ app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/delete/([0-9]+)', DeletePost),
                                ('/completed', Completed),
                                ('/like/([0-9]+)', Like),
-                               ('/deletecomment/([0-9]+)/([0-9]+)', DeleteComment),
+                               ('/deletecomment/([0-9]+)/([0-9]+)',
+                                DeleteComment),
                                ('/editcomment/([0-9]+)/([0-9]+)', EditComment),
                                ('/failed', Failed)
                                ],
