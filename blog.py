@@ -94,6 +94,7 @@ class User(db.Model):
     name = db.StringProperty(required = True)
     pw_hash = db.StringProperty(required = True)
     email = db.StringProperty()
+    liked = db.StringProperty(default='')
 
     @classmethod
     def by_id(cls, uid):
@@ -118,9 +119,7 @@ class User(db.Model):
         if u and valid_pw(name, pw, u.pw_hash):
             return u
 
-
 ##### blog stuff
-
 def blog_key(name = 'default'):
     return db.Key.from_path('blogs', name)
 
@@ -143,7 +142,6 @@ class Comment(db.Model):
     creator = db.StringProperty()
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
-
 
 class BlogFront(BlogHandler):
     def get(self):
@@ -180,13 +178,11 @@ class PostPage(BlogHandler):
             creator = self.user.name
             c = Comment(comment=comment, comment_post_id=comment_post_id, creator=creator)
             c.put()
-            self.redirect('/%s' % str(post.key().id()))
+            self.redirect('/completed')
         else:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
             self.redirect('/%s' % str(post.key().id()))
-
-
 
 class NewPost(BlogHandler):
     def get(self):
@@ -341,11 +337,15 @@ class DeletePost(BlogHandler):
                 c.delete()
 
         post.delete()
-        self.redirect('/deleted')
+        self.redirect('/completed')
 
-class Deleted(BlogHandler):
+class Completed(BlogHandler):
     def get(self):
-        self.render('deleted.html')
+        self.render('completed.html')
+
+class Failed(BlogHandler):
+    def get(self):
+        self.render('failed.html')
 
 class Like(BlogHandler):
     def get(self, post_id):
@@ -354,14 +354,18 @@ class Like(BlogHandler):
             post = db.get(key)
             if not post.likes:
                 post.likes = 0
-            if self.user.name != post.creator:
+            if self.user.name != post.creator and str(post.key().id()) not in self.user.liked:
                 post.likes += 1
+                self.user.liked += str(post.key().id()) + ','
+                self.user.put()
                 post.put()
-                self.redirect('/')
+                self.redirect('/completed')
+            if str(post.key().id()) in self.user.liked:
+                error = "Cannot like a post more than once"
+                self.render('failed.html', error=error)
             else:
-                ##currently user is not told about the error
                 error = "Cannot like your own posts"
-                self.redirect('/')
+                self.render('failed.html', error=error)
 
         else:
             self.redirect("/login")
@@ -380,7 +384,7 @@ class DeleteComment(BlogHandler):
         c_key = db.Key.from_path('Comment', int(comment_id))
         comment = db.get(c_key)
         comment.delete()
-        self.redirect('/deleted')
+        self.redirect('/completed')
 
 class EditComment(BlogHandler):
     def get(self, post_id, comment_id):
@@ -396,14 +400,12 @@ class EditComment(BlogHandler):
             comment_content = self.request.get('comment-content')
             comment.comment = comment_content
             comment.put()
-            self.redirect('/deleted')
+            self.redirect('/completed')
         else:
             error = "Cannot leave blank comments!"
             key = db.Key.from_path('Comment', int(comment_id))
             comment = db.get(key)
             self.render("editcomment.html", comment=comment, error=error)
-
-
 
 app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/([0-9]+)', PostPage),
@@ -414,9 +416,10 @@ app = webapp2.WSGIApplication([('/', BlogFront),
                                ('/welcome', BlogWelcome),
                                ('/edit/([0-9]+)', EditPost),
                                ('/delete/([0-9]+)', DeletePost),
-                               ('/deleted', Deleted),
+                               ('/completed', Completed),
                                ('/like/([0-9]+)', Like),
                                ('/deletecomment/([0-9]+)/([0-9]+)', DeleteComment),
-                               ('/editcomment/([0-9]+)/([0-9]+)', EditComment)
+                               ('/editcomment/([0-9]+)/([0-9]+)', EditComment),
+                               ('/failed', Failed)
                                ],
                               debug=True)

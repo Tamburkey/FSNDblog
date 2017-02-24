@@ -44,7 +44,6 @@ label {
   display: block;
   font-size: 20px;
   margin-bottom: 10px;
-  text-align: center;
 }
 
 label + label {
@@ -106,6 +105,8 @@ input[type=submit] {
     bottom: 0px;
 }
 
+.new-post:hover,
+.return:hover,
 .button:hover,
 .post-title:hover,
 .sub-title:hover,
@@ -175,9 +176,16 @@ input[type=submit] {
     position: absolute;
     top: 10px;
     left: 10px;
+    color: gray;
+    text-decoration: none;
 }
 
 .input-comment {
     width:100%;
     text-align: center;
+}
+
+.return {
+    text-decoration: none;
+    padding: 10px;
 }

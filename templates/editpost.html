@@ -2,20 +2,24 @@
 
 {% block content %}
 	<h2>Edit Post</h2>
-
 	<form method="post">
       <label>
-        <div>Subject</div>
+        <div>
+        	Subject
+        </div>
         <input type="text" name="subject" value="{{p.subject}}">
       </label>
-
       <label>
-        <div>Seenit Post</div>
-        <textarea name="content">{{p.content}}</textarea>
+        <div>
+        	Seenit Post
+        </div>
+        <textarea name="content">
+        	{{p.content}}
+        </textarea>
       </label>
-
-      <div class="error">{{error}}</div>
-
+      <div class="error">
+      	{{error}}
+      </div>
       <input type="submit">
     </form>
     <a href="/{{p.key().id()}}" class="return">

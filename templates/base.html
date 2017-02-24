@@ -2,7 +2,9 @@
 <html>
 <head>
   <link type="text/css" rel="stylesheet" href="/static/main.css" />
-  <title>Seenit</title>
+  <title>
+    Seenit
+  </title>
 </head>
 
 <body>
@@ -23,15 +25,13 @@
     {% endif %}
   </div>
   {% if user %}
-    <div class="new-post">
-      <a href="/newpost" class="button">
-        Submit New Post
-      </a>
-    </div>
+    <a class="new-post" href="/newpost">
+      Submit New Post
+    </a>
   {% endif %}
   <div id="content">
-  {% block content %}
-  {% endblock %}
+    {% block content %}
+    {% endblock %}
   </div>
 </body>
 
