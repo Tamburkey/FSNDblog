@@ -14,14 +14,18 @@
     		Post
     	</div>
 	{% endif %}
+	<h2>
+		Comments
+	</h2>
 	{% for c in comments %}
 		{% if c.comment_post_id == post_id %}
 			<div class="comment">
 				<div class="comment-content">
 					{{c.comment}}
 				</div>
-				<div class="creator">
-					Posted by: {{c.creator}} on {{c.created.strftime("%b %d, %Y")}}
+				<div class="comment-creator">
+					Posted by: {{c.creator}} on
+					{{c.created.strftime("%b %d, %Y")}}
 				</div>
 				{% if user.name == c.creator %}
 				<div class="comment-edit">
@@ -53,7 +57,7 @@
     	</div>
 	{% endif %}
 	<div>
-    	<a class="button" href="/">
+    	<a class="return" href="/">
     		Return
     	</a>
     </div>

@@ -8,27 +8,29 @@
 </head>
 
 <body>
-  <a href="/" class="main-title">
-    Seenit
-  </a>
-  <div class="login-area">
-    {% if user %}
-      {{user.name}} (<a class="login-link" href="/logout">logout</a>)
-    {% else %}
-      <a class="login-link" href="/login">
-        login
-      </a>
-      |
-      <a class="login-link" href="/signup">
-        signup
-      </a>
-    {% endif %}
-  </div>
-  {% if user %}
+  <div class="header-content">
+    <a href="/" class="main-title">
+      Seenit
+    </a>
+    <div class="login-area">
+      {% if user %}
+        {{user.name}} (<a class="login-link" href="/logout">
+            logout
+          </a>)
+      {% else %}
+        <a class="login-link" href="/login">
+          login
+        </a>
+        |
+        <a class="login-link" href="/signup">
+          signup
+        </a>
+      {% endif %}
+    </div>
     <a class="new-post" href="/newpost">
       Submit New Post
     </a>
-  {% endif %}
+  </div>
   <div id="content">
     {% block content %}
     {% endblock %}

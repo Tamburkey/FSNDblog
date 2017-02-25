@@ -11,8 +11,8 @@ import jinja2
 from google.appengine.ext import db
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
-                               autoescape = True)
+jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
+                               autoescape=True)
 
 secret = 'fart'
 
@@ -85,11 +85,11 @@ class BlogHandler(webapp2.RequestHandler):
 
 
 # user stuff
-def make_salt(length = 5):
+def make_salt(length=5):
     return ''.join(random.choice(letters) for x in xrange(length))
 
 
-def make_pw_hash(name, pw, salt = None):
+def make_pw_hash(name, pw, salt=None):
     if not salt:
         salt = make_salt()
     h = hashlib.sha256(name + pw + salt).hexdigest()
@@ -101,19 +101,19 @@ def valid_pw(name, password, h):
     return h == make_pw_hash(name, password, salt)
 
 
-def users_key(group = 'default'):
+def users_key(group='default'):
     return db.Key.from_path('users', group)
 
 
 class User(db.Model):
-    name = db.StringProperty(required = True)
-    pw_hash = db.StringProperty(required = True)
+    name = db.StringProperty(required=True)
+    pw_hash = db.StringProperty(required=True)
     email = db.StringProperty()
     liked = db.StringProperty(default='')
 
     @classmethod
     def by_id(cls, uid):
-        return User.get_by_id(uid, parent = users_key())
+        return User.get_by_id(uid, parent=users_key())
 
     @classmethod
     def by_name(cls, name):
@@ -121,12 +121,12 @@ class User(db.Model):
         return u
 
     @classmethod
-    def register(cls, name, pw, email = None):
+    def register(cls, name, pw, email=None):
         pw_hash = make_pw_hash(name, pw)
-        return User(parent = users_key(),
-                    name = name,
-                    pw_hash = pw_hash,
-                    email = email)
+        return User(parent=users_key(),
+                    name=name,
+                    pw_hash=pw_hash,
+                    email=email)
 
     @classmethod
     def login(cls, name, pw):
@@ -136,30 +136,30 @@ class User(db.Model):
 
 
 # blog stuff
-def blog_key(name = 'default'):
+def blog_key(name='default'):
     return db.Key.from_path('blogs', name)
 
 
 class Post(db.Model):
-    subject = db.StringProperty(required = True)
-    content = db.TextProperty(required = True)
-    created = db.DateTimeProperty(auto_now_add = True)
-    last_modified = db.DateTimeProperty(auto_now = True)
-    creator = db.StringProperty(required = True)
+    subject = db.StringProperty(required=True)
+    content = db.TextProperty(required=True)
+    created = db.DateTimeProperty(auto_now_add=True)
+    last_modified = db.DateTimeProperty(auto_now=True)
+    creator = db.StringProperty(required=True)
     likes = db.IntegerProperty()
     comment_count = db.IntegerProperty()
 
     def render(self):
         self._render_text = self.content.replace('\n', '<br>')
-        return render_str("post.html", p = self)
+        return render_str("post.html", p=self)
 
 
 class Comment(db.Model):
     comment = db.StringProperty()
     comment_post_id = db.StringProperty()
     creator = db.StringProperty()
-    created = db.DateTimeProperty(auto_now_add = True)
-    last_modified = db.DateTimeProperty(auto_now = True)
+    created = db.DateTimeProperty(auto_now_add=True)
+    last_modified = db.DateTimeProperty(auto_now=True)
 
 
 class BlogFront(BlogHandler):
@@ -167,7 +167,7 @@ class BlogFront(BlogHandler):
         posts = db.GqlQuery("select * from Post order by last_modified \
                             desc limit 10")
         comments = db.GqlQuery("select * from Comment order by created")
-        self.render('front.html', posts = posts, comments = comments)
+        self.render('front.html', posts=posts, comments=comments)
 
 
 class PostPage(BlogHandler):
@@ -180,8 +180,8 @@ class PostPage(BlogHandler):
             self.error(404)
             return
 
-        self.render("permalink.html", post = post, comments=comments,
-                    post_id = str(post.key().id()))
+        self.render("permalink.html", post=post, comments=comments,
+                    post_id=str(post.key().id()))
 
     def post(self, post_id):
         if not self.user:
@@ -225,8 +225,8 @@ class NewPost(BlogHandler):
         likes = 0
 
         if subject and content and creator:
-            p = Post(parent = blog_key(), subject=subject,
-                        content=content, creator=creator, likes=likes)
+            p = Post(parent=blog_key(), subject=subject,
+                     content=content, creator=creator, likes=likes)
             p.put()
             self.redirect('/%s' % str(p.key().id()))
         else:
@@ -246,8 +246,8 @@ class Signup(BlogHandler):
         self.verify = self.request.get('verify')
         self.email = self.request.get('email')
 
-        params = dict(username = self.username,
-                      email = self.email)
+        params = dict(username=self.username,
+                      email=self.email)
 
         if not valid_username(self.username):
             params['error_username'] = "That's not a valid username."
@@ -279,7 +279,7 @@ class Register(Signup):
         u = User.by_name(self.username)
         if u:
             msg = 'That user already exists.'
-            self.render('signup-form.html', error_username = msg)
+            self.render('signup-form.html', error_username=msg)
         else:
             u = User.register(self.username, self.password, self.email)
             u.put()
@@ -302,7 +302,7 @@ class Login(BlogHandler):
             self.redirect('/welcome')
         else:
             msg = 'Invalid login'
-            self.render('login-form.html', error = msg)
+            self.render('login-form.html', error=msg)
 
 
 class Logout(BlogHandler):
@@ -314,7 +314,7 @@ class Logout(BlogHandler):
 class BlogWelcome(BlogHandler):
     def get(self):
         if self.user:
-            self.render('welcome.html', username = self.user.name)
+            self.render('welcome.html', username=self.user.name)
         else:
             self.redirect('/signup')
 
@@ -324,7 +324,7 @@ class EditPost(BlogHandler):
         if self.user:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
-            self.render("editpost.html", p = post)
+            self.render("editpost.html", p=post)
         else:
             self.redirect("/login")
 
@@ -355,7 +355,7 @@ class DeletePost(BlogHandler):
         if self.user:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
-            self.render("deletepost.html", post = post)
+            self.render("deletepost.html", post=post)
         else:
             self.redirect("/login")
 
@@ -411,7 +411,7 @@ class Like(BlogHandler):
 
 
 class DeleteComment(BlogHandler):
-    def get(self, post_id, comment_id):
+    def get(self, comment_id):
         key = db.Key.from_path('Comment', int(comment_id))
         comment = db.get(key)
         self.render('deletecomment.html', comment=comment)
@@ -428,12 +428,12 @@ class DeleteComment(BlogHandler):
 
 
 class EditComment(BlogHandler):
-    def get(self, post_id, comment_id):
+    def get(self, comment_id):
         key = db.Key.from_path('Comment', int(comment_id))
         comment = db.get(key)
         self.render('editcomment.html', comment=comment)
 
-    def post(self, post_id, comment_id):
+    def post(self, comment_id):
         comment_content = self.request.get('comment-content')
         if comment_content:
             key = db.Key.from_path('Comment', int(comment_id))
@@ -464,5 +464,5 @@ app = webapp2.WSGIApplication([('/', BlogFront),
                                 DeleteComment),
                                ('/editcomment/([0-9]+)/([0-9]+)', EditComment),
                                ('/failed', Failed)
-                               ],
+                              ],
                               debug=True)

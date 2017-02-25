@@ -1,34 +1,37 @@
 <div class="post">
   <div class="like">
     <a href="/like/{{p.key().id()}}" >
-        <img class="like-img" src="static/images/thumbsup.png">
+        <img class="like-img" src="static/images/thumbsup.png"
+        alt="thumbs up icon">
     </a>
     <div class="like-count">
       Likes: {{p.likes}}
     </div>
   </div>
-  <div class="post-body">
-    <div class="post-heading">
-      <a href="/{{p.key().id()}}" class="post-title">
-        {{p.subject}}
-      </a>
+  <div class="column-2">
+    <div class="post-info">
+      <div class="post-heading">
+        <a href="/{{p.key().id()}}" class="post-title">
+          {{p.subject}}
+        </a>
+      </div>
+      <div class="post-sub-heading">
+        <span class="post-date">
+          Created: {{p.created.strftime("%b %d, %Y")}} |
+        </span>
+        <span class="edit-date">
+        Modified: {{p.last_modified.strftime("%b %d, %Y")}} |
+        </span>
+        <span class="post-creator">
+          Posted by: {{p.creator}} |
+        </span>
+        <span class="comment-count">
+          Comments: {{p.comment_count}}
+        </span>
+      </div>
     </div>
-    <div class="post-content">
+    <div class="post-body">
       {{p._render_text | safe}}
-    </div>
-  </div>
-  <div class="post-info">
-    <div class="post-date">
-      Created: {{p.created.strftime("%b %d, %Y")}}
-    </div>
-    <div class="post-date">
-      Modified: {{p.last_modified.strftime("%b %d, %Y")}}
-    </div>
-    <div class="creator">
-      Posted by: {{p.creator}}
-    </div>
-    <div class="comment-count">
-      Comments: {{p.comment_count}}
     </div>
   </div>
 </div>

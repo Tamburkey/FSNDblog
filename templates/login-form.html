@@ -2,16 +2,14 @@
 
 <html>
   <head>
-    <title>Login</title>
-    <style type="text/css">
-      .label {text-align: right}
-      .error {color: red}
-    </style>
-
+    <title>Seenit Login</title>
+    <link type="text/css" rel="stylesheet"
+      href="/static/main.css" />
   </head>
-
   <body>
-    <h2>Login</h2>
+    <h2>
+      Seenit Login
+    </h2>
     <form method="post">
       <table>
         <tr>
@@ -22,7 +20,6 @@
             <input type="text" name="username" value="{{username}}">
           </td>
         </tr>
-
         <tr>
           <td class="label">
             Password
@@ -32,14 +29,16 @@
           </td>
         </tr>
       </table>
-
       <div class="error">
         {{error}}
       </div>
-
       <input type="submit">
     </form>
-    <a href="/signup">New? Sign up here!</a>
+    <a href="/signup" class="signup">
+      New? Sign up here!
+    </a>
   </body>
-
+    <a class="return" href="/">
+      Return
+    </a>
 </html>
