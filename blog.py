@@ -14,9 +14,10 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True)
 
-secret = 'fart'
+file = open('secret.txt', 'r')
+secret = file.read()
 
-
+# functions for validating user sign-up input
 def valid_username(username):
     USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
     return username and USER_RE.match(username)
@@ -32,15 +33,18 @@ def valid_email(email):
     return not email or EMAIL_RE.match(email)
 
 
+# template rendering
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
 
+# create a secure value for cookies
 def make_secure_val(val):
     return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
 
 
+# validation of secure val
 def check_secure_val(secure_val):
     val = secure_val.split('|')[0]
     if secure_val == make_secure_val(val):
@@ -399,7 +403,6 @@ class Like(BlogHandler):
             if not post:
                 self.error(404)
                 return
-            return
             if not post.likes:
                 post.likes = 0
             if self.user.name != post.creator and \
