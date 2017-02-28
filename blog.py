@@ -104,7 +104,7 @@ def valid_pw(name, password, h):
 def users_key(group='default'):
     return db.Key.from_path('users', group)
 
-
+# User entity in google data store
 class User(db.Model):
     name = db.StringProperty(required=True)
     pw_hash = db.StringProperty(required=True)
@@ -120,6 +120,8 @@ class User(db.Model):
         u = User.all().filter('name =', name).get()
         return u
 
+
+    # hash password before storing
     @classmethod
     def register(cls, name, pw, email=None):
         pw_hash = make_pw_hash(name, pw)
@@ -139,7 +141,7 @@ class User(db.Model):
 def blog_key(name='default'):
     return db.Key.from_path('blogs', name)
 
-
+# Post entity in google data store
 class Post(db.Model):
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
@@ -154,7 +156,7 @@ class Post(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p=self)
 
-
+# Comment entity in google data store
 class Comment(db.Model):
     comment = db.StringProperty()
     comment_post_id = db.StringProperty()
@@ -162,7 +164,7 @@ class Comment(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
 
-
+# query google data store for posts and comments and render front-page
 class BlogFront(BlogHandler):
     def get(self):
         posts = db.GqlQuery("select * from Post order by last_modified \
@@ -170,11 +172,12 @@ class BlogFront(BlogHandler):
         comments = db.GqlQuery("select * from Comment order by created")
         self.render('front.html', posts=posts, comments=comments)
 
-
+# create specific post page w/ comments for each post in the database
 class PostPage(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+        # iterate over comments in permalink.html to generate post comments
         comments = db.GqlQuery("select * from Comment order by created")
         # make sure post exists
         if not post:
@@ -229,6 +232,7 @@ class NewPost(BlogHandler):
 
         # make sure all required post properties exist
         if subject and content and creator:
+            # create post
             p = Post(parent=blog_key(), subject=subject,
                      content=content, creator=creator, likes=likes)
             p.put()
@@ -253,6 +257,7 @@ class Signup(BlogHandler):
         params = dict(username=self.username,
                       email=self.email)
 
+        # error handling for invalid input
         if not valid_username(self.username):
             params['error_username'] = "That's not a valid username."
             have_error = True
