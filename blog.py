@@ -444,7 +444,7 @@ class DeleteComment(BlogHandler):
 
 
 class EditComment(BlogHandler):
-    def get(self, comment_id):
+    def get(self, post_id, comment_id):
         key = db.Key.from_path('Comment', int(comment_id))
         comment = db.get(key)
         if not comment:
@@ -452,15 +452,19 @@ class EditComment(BlogHandler):
             return
         self.render('editcomment.html', comment=comment)
 
-    def post(self, comment_id):
+    def post(self, post_id, comment_id):
         comment_content = self.request.get('comment-content')
         if comment_content:
             key = db.Key.from_path('Comment', int(comment_id))
             comment = db.get(key)
-            comment_content = self.request.get('comment-content')
-            comment.comment = comment_content
-            comment.put()
-            self.redirect('/completed')
+            if self.user.name == comment.creator:
+                comment_content = self.request.get('comment-content')
+                comment.comment = comment_content
+                comment.put()
+                self.redirect('/completed')
+            else:
+                self.error(404)
+                return
         else:
             error = "Cannot leave blank comments!"
             key = db.Key.from_path('Comment', int(comment_id))
