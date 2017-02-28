@@ -145,6 +145,7 @@ class Post(db.Model):
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
+    # TODO get ReferenceProperty type to function for creator
     creator = db.StringProperty(required=True)
     likes = db.IntegerProperty()
     comment_count = db.IntegerProperty()
@@ -175,7 +176,7 @@ class PostPage(BlogHandler):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
         comments = db.GqlQuery("select * from Comment order by created")
-
+        # make sure post exists
         if not post:
             self.error(404)
             return
@@ -187,11 +188,13 @@ class PostPage(BlogHandler):
         if not self.user:
             self.redirect('/login')
 
+        # comment creation
         comment = self.request.get('comment')
 
         if comment:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
+            # make sure post.comment_count is not None
             if not post.comment_count:
                 post.comment_count = 0
             post.comment_count += 1
@@ -224,6 +227,7 @@ class NewPost(BlogHandler):
         creator = self.user.name
         likes = 0
 
+        # make sure all required post properties exist
         if subject and content and creator:
             p = Post(parent=blog_key(), subject=subject,
                      content=content, creator=creator, likes=likes)
@@ -335,12 +339,15 @@ class EditPost(BlogHandler):
         subject = self.request.get('subject')
         content = self.request.get('content')
 
+        # make sure subject and content are not blank
         if subject and content:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
+            # make sure post exists
             if not post:
                 self.error(404)
                 return
+            # make sure current user is post.creator
             if self.user.name == post.creator:
                 post.subject = subject
                 post.content = content
@@ -373,9 +380,11 @@ class DeletePost(BlogHandler):
 
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
+        # make sure post exists
         if not post:
             self.error(404)
             return
+        # make sure current user is post.creator
         if self.user.name == post.creator:
             comments = db.GqlQuery("select * from Comment order by created")
             for c in comments:
@@ -384,12 +393,12 @@ class DeletePost(BlogHandler):
             post.delete()
             self.redirect('/completed')
 
-
+# page for completed action so that front page refreshes properly
 class Completed(BlogHandler):
     def get(self):
         self.render('completed.html')
 
-
+# page for failed action so that front page refreshes properly
 class Failed(BlogHandler):
     def get(self):
         self.render('failed.html')
@@ -400,11 +409,15 @@ class Like(BlogHandler):
         if self.user:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
+            # make sure post exists
             if not post:
                 self.error(404)
                 return
+            # make sure post.likes is not None
             if not post.likes:
                 post.likes = 0
+            # make sure user is not liking own post  
+            # and hasn't already liked the post
             if self.user.name != post.creator and \
                     str(post.key().id()) not in self.user.liked:
                 post.likes += 1
@@ -427,6 +440,7 @@ class DeleteComment(BlogHandler):
     def get(self, comment_id):
         key = db.Key.from_path('Comment', int(comment_id))
         comment = db.get(key)
+        # make sure comment exists
         if not comment:
             self.error(404)
             return
@@ -435,6 +449,7 @@ class DeleteComment(BlogHandler):
     def post(self, post_id, comment_id):
         p_key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(p_key)
+        # make sure post exists
         if not post:
             self.error(404)
             return
@@ -450,6 +465,7 @@ class EditComment(BlogHandler):
     def get(self, post_id, comment_id):
         key = db.Key.from_path('Comment', int(comment_id))
         comment = db.get(key)
+        # make sure comment exists
         if not comment:
             self.error(404)
             return
@@ -460,6 +476,7 @@ class EditComment(BlogHandler):
         if comment_content:
             key = db.Key.from_path('Comment', int(comment_id))
             comment = db.get(key)
+            # make sure current user is comment.creator
             if self.user.name == comment.creator:
                 comment_content = self.request.get('comment-content')
                 comment.comment = comment_content
