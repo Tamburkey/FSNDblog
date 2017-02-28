@@ -16,23 +16,19 @@ jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
 
 secret = 'fart'
 
-# Regex functions to validate user/pass/email
-USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
-
 
 def valid_username(username):
+    USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
     return username and USER_RE.match(username)
-
-PASS_RE = re.compile(r"^.{3,20}$")
 
 
 def valid_password(password):
+    PASS_RE = re.compile(r"^.{3,20}$")
     return password and PASS_RE.match(password)
-
-EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
 
 
 def valid_email(email):
+    EMAIL_RE = re.compile(r'^[\S]+@[\S]+\.[\S]+$')
     return not email or EMAIL_RE.match(email)
 
 
@@ -185,7 +181,7 @@ class PostPage(BlogHandler):
 
     def post(self, post_id):
         if not self.user:
-            self.redirect('/')
+            self.redirect('/login')
 
         comment = self.request.get('comment')
 
@@ -338,10 +334,18 @@ class EditPost(BlogHandler):
         if subject and content:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
-            post.subject = subject
-            post.content = content
-            post.put()
-            self.redirect('/%s' % str(post.key().id()))
+            if not post:
+                self.error(404)
+                return
+            if self.user.name == post.creator:
+                post.subject = subject
+                post.content = content
+                post.put()
+                self.redirect('/%s' % str(post.key().id()))
+            else:
+                self.error(404)
+                return
+
         else:
             error = "subject and content, please!"
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
@@ -365,14 +369,16 @@ class DeletePost(BlogHandler):
 
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
-
-        comments = db.GqlQuery("select * from Comment order by created")
-        for c in comments:
-            if c.comment_post_id == key:
-                c.delete()
-
-        post.delete()
-        self.redirect('/completed')
+        if not post:
+            self.error(404)
+            return
+        if self.user.name == post.creator:
+            comments = db.GqlQuery("select * from Comment order by created")
+            for c in comments:
+                if c.comment_post_id == key:
+                    c.delete()
+            post.delete()
+            self.redirect('/completed')
 
 
 class Completed(BlogHandler):
@@ -390,6 +396,10 @@ class Like(BlogHandler):
         if self.user:
             key = db.Key.from_path('Post', int(post_id), parent=blog_key())
             post = db.get(key)
+            if not post:
+                self.error(404)
+                return
+            return
             if not post.likes:
                 post.likes = 0
             if self.user.name != post.creator and \
@@ -414,11 +424,17 @@ class DeleteComment(BlogHandler):
     def get(self, comment_id):
         key = db.Key.from_path('Comment', int(comment_id))
         comment = db.get(key)
+        if not comment:
+            self.error(404)
+            return
         self.render('deletecomment.html', comment=comment)
 
     def post(self, post_id, comment_id):
         p_key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(p_key)
+        if not post:
+            self.error(404)
+            return
         post.comment_count -= 1
         post.put()
         c_key = db.Key.from_path('Comment', int(comment_id))
@@ -431,6 +447,9 @@ class EditComment(BlogHandler):
     def get(self, comment_id):
         key = db.Key.from_path('Comment', int(comment_id))
         comment = db.get(key)
+        if not comment:
+            self.error(404)
+            return
         self.render('editcomment.html', comment=comment)
 
     def post(self, comment_id):
