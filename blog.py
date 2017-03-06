@@ -147,8 +147,7 @@ class Post(db.Model):
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
-    # TODO get ReferenceProperty type to function for creator
-    creator = db.StringProperty(required=True)
+    creator = db.ReferenceProperty(User)
     likes = db.IntegerProperty()
     comment_count = db.IntegerProperty()
 
@@ -227,7 +226,7 @@ class NewPost(BlogHandler):
 
         subject = self.request.get('subject')
         content = self.request.get('content')
-        creator = self.user.name
+        creator = self.user.key()
         likes = 0
 
         # make sure all required post properties exist
@@ -353,7 +352,7 @@ class EditPost(BlogHandler):
                 self.error(404)
                 return
             # make sure current user is post.creator
-            if self.user.name == post.creator:
+            if self.user.key() == post.creator.key():
                 post.subject = subject
                 post.content = content
                 post.put()
@@ -390,13 +389,15 @@ class DeletePost(BlogHandler):
             self.error(404)
             return
         # make sure current user is post.creator
-        if self.user.name == post.creator:
+        if self.user.key() == post.creator.key():
             comments = db.GqlQuery("select * from Comment order by created")
             for c in comments:
                 if c.comment_post_id == key:
                     c.delete()
             post.delete()
             self.redirect('/completed')
+        else:
+            self.redirect('/')
 
 # page for completed action so that front page refreshes properly
 class Completed(BlogHandler):
@@ -422,8 +423,8 @@ class Like(BlogHandler):
             if not post.likes:
                 post.likes = 0
             # make sure user is not liking own post  
-            # and hasn't already liked the post
-            if self.user.name != post.creator and \
+            # and hasn't already liked this post
+            if self.user.key() != post.creator.key() and \
                     str(post.key().id()) not in self.user.liked:
                 post.likes += 1
                 self.user.liked += str(post.key().id()) + ','

@@ -2,7 +2,7 @@
 
 {% block content %}
 	{{post.render() | safe}}
-	{% if user.name == post.creator %}
+	{% if user.name == post.creator.name %}
 		<div class="post-edit">
 			<a class="button" href="/delete/{{post.key().id()}}">
 				Delete
