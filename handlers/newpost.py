@@ -21,8 +21,8 @@ class NewPost(BlogHandler):
         # make sure all required post properties exist
         if subject and content and creator:
             # create post
-            p = Post(parent=blog_key(), subject=subject,
-                     content=content, creator=creator, likes=likes)
+            p = Post(subject=subject, content=content,
+                        creator=creator, likes=likes)
             p.put()
             self.redirect('/%s' % str(p.key().id()))
         else:

@@ -1,18 +1,10 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html>
-  <head>
-    <title>
-    	Complete
-    </title>
-    <link type="text/css" rel="stylesheet" href="/static/main.css" />
-  </head>
-  <body>
-    <h2>
-    	Action Completed
-    </h2>
-    <a class="return" href="/">
-    	Return to blog
-    </a>
-  </body>
-</html>
+{% block content %}
+  <h2>
+    Action Completed
+  </h2>
+  <a class="return" href="/">
+    Return to blog
+  </a>
+{% endblock %}

@@ -3,13 +3,11 @@ from models import User
 from models import Post
 from google.appengine.ext import db
 
-def blog_key(name='default'):
-    return db.Key.from_path('blogs', name)
 
 class EditPost(BlogHandler):
     def get(self, post_id):
         if self.user:
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            key = db.Key.from_path('Post', int(post_id))
             post = db.get(key)
             self.render("editpost.html", p=post)
         else:

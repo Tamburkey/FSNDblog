@@ -2,13 +2,11 @@ from handlers import BlogHandler
 from models import *
 from google.appengine.ext import db
 
-def blog_key(name='default'):
-    return db.Key.from_path('blogs', name)
 
 class DeletePost(BlogHandler):
     def get(self, post_id):
         if self.user:
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            key = db.Key.from_path('Post', int(post_id))
             post = db.get(key)
             self.render("deletepost.html", post=post)
         else:

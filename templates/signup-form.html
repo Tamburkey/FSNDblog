@@ -1,17 +1,9 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html>
-  <head>
-    <title>
-      Seenit Sign Up
-    </title>
-    <link type="text/css" rel="stylesheet"
-      href="/static/main.css" />
-  </head>
-  <body>
-    <h2>
-      Seenit Signup
-    </h2>
+{% block content %}
+  <h2>
+    Signup
+  </h2>
     <form method="post">
       <table>
         <tr>
@@ -25,7 +17,6 @@
             {{error_username}}
           </td>
         </tr>
-
         <tr>
           <td class="label">
             Password
@@ -37,7 +28,6 @@
             {{error_password}}
           </td>
         </tr>
-
         <tr>
           <td class="label">
             Verify Password
@@ -49,7 +39,6 @@
             {{error_verify}}
           </td>
         </tr>
-
         <tr>
           <td class="label">
             Email (optional)
@@ -70,6 +59,4 @@
     <a class="return" href="/">
       Return
     </a>
-  </body>
-
-</html>
+{% endblock %}

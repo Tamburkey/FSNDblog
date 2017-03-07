@@ -1,44 +1,37 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html>
-  <head>
-    <title>Seenit Login</title>
-    <link type="text/css" rel="stylesheet"
-      href="/static/main.css" />
-  </head>
-  <body>
-    <h2>
-      Seenit Login
-    </h2>
-    <form method="post">
-      <table>
-        <tr>
-          <td class="label">
-            Username
-          </td>
-          <td>
-            <input type="text" name="username" value="{{username}}">
-          </td>
-        </tr>
-        <tr>
-          <td class="label">
-            Password
-          </td>
-          <td>
-            <input type="password" name="password" value="">
-          </td>
-        </tr>
-      </table>
-      <div class="error">
-        {{error}}
-      </div>
-      <input type="submit">
-    </form>
-    <a href="/signup" class="signup">
-      New? Sign up here!
-    </a>
-  </body>
-    <a class="return" href="/">
-      Return
-    </a>
-</html>
+{% block content %}
+<h2>
+  Login
+</h2>
+<form method="post">
+  <table>
+    <tr>
+      <td class="label">
+        Username
+      </td>
+      <td>
+        <input type="text" name="username" value="{{username}}">
+      </td>
+    </tr>
+    <tr>
+      <td class="label">
+        Password
+      </td>
+      <td>
+        <input type="password" name="password" value="">
+      </td>
+    </tr>
+  </table>
+  <div class="error">
+    {{error}}
+  </div>
+  <input type="submit">
+</form>
+<a href="/signup" class="signup">
+  New? Sign up here!
+</a>
+<a class="return" href="/">
+    Return
+  </a>
+{% endblock %}

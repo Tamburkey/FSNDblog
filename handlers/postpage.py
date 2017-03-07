@@ -8,7 +8,7 @@ def blog_key(name='default'):
 
 class PostPage(BlogHandler):
     def get(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        key = db.Key.from_path('Post', int(post_id))
         post = db.get(key)
         # iterate over comments in permalink.html to generate post comments
         comments = db.GqlQuery("select * from Comment order by created")

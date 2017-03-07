@@ -201,7 +201,7 @@ input[type=submit] {
 
 .signup {
     position:absolute;
-    top:0px;
+    bottom:0px;
     right: 0px;
     text-decoration: none;
     padding: 15px;

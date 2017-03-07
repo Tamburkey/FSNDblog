@@ -1,22 +1,13 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html>
-  <head>
-    <title>
-    	Action Failed
-    </title>
-    <link type="text/css" rel="stylesheet" href="/static/main.css" />
-  </head>
-
-  <body>
-    <h2>
-    	Action Failed
-    </h2>
-    <div class="error">
-    	{{error}}
-    </div>
-    <a class="return" href="/">
-    	Return
-    </a>
-  </body>
-</html>
+{% block content %}
+<h2>
+  Action Failed
+</h2>
+<div class="error">
+  {{error}}
+</div>
+<a class="return" href="/">
+  Return
+</a>
+{% endblock %}
