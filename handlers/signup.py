@@ -1,4 +1,6 @@
 from handlers import BlogHandler
+import re
+import random
 
 
 # functions for validating user sign-up input

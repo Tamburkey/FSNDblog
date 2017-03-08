@@ -1,5 +1,7 @@
 from google.appengine.ext import db
 import hashlib
+import random
+from string import letters
 
 def make_salt(length=5):
     return ''.join(random.choice(letters) for x in xrange(length))
