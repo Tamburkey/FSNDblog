@@ -5,13 +5,13 @@ from handlers import BlogHandler
 class NewPost(BlogHandler):
     def get(self):
         if self.user:
-            self.render("newpost.html")
+            self.render('newpost.html')
         else:
-            self.redirect("/login")
+            self.redirect('/login')
 
     def post(self):
         if not self.user:
-            self.redirect('/')
+            self.redirect('/login')
 
         subject = self.request.get('subject')
         content = self.request.get('content')

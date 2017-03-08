@@ -41,7 +41,6 @@ h2 {
 }
 
 label {
-  display: block;
   font-size: 20px;
   margin-bottom: 10px;
 }
@@ -192,7 +191,9 @@ input[type=submit] {
 }
 
 .return {
-    display: block;
+    position: absolute;
+    bottom:-15px;
+    left: 10px;
     text-decoration: none;
     padding: 5px;
     color: green;

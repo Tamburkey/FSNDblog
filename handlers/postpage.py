@@ -2,9 +2,6 @@ from models import *
 from handlers import BlogHandler
 from google.appengine.ext import db
 
-def blog_key(name='default'):
-    return db.Key.from_path('blogs', name)
-
 
 class PostPage(BlogHandler):
     def get(self, post_id):
@@ -28,7 +25,7 @@ class PostPage(BlogHandler):
         comment = self.request.get('comment')
 
         if comment:
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            key = db.Key.from_path('Post', int(post_id))
             post = db.get(key)
             # make sure post.comment_count is not None
             if not post.comment_count:
@@ -42,6 +39,6 @@ class PostPage(BlogHandler):
             c.put()
             self.redirect('/completed')
         else:
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            key = db.Key.from_path('Post', int(post_id))
             post = db.get(key)
             self.redirect('/%s' % str(post.key().id()))

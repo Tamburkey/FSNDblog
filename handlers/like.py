@@ -3,14 +3,10 @@ from models import Post
 from handlers import BlogHandler
 from google.appengine.ext import db
 
-def blog_key(name='default'):
-    return db.Key.from_path('blogs', name)
-
-
 class Like(BlogHandler):
     def get(self, post_id):
         if self.user:
-            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            key = db.Key.from_path('Post', int(post_id))
             post = db.get(key)
             # make sure post exists
             if not post:

@@ -5,24 +5,14 @@
   Login
 </h2>
 <form method="post">
-  <table>
-    <tr>
-      <td class="label">
-        Username
-      </td>
-      <td>
-        <input type="text" name="username" value="{{username}}">
-      </td>
-    </tr>
-    <tr>
-      <td class="label">
-        Password
-      </td>
-      <td>
-        <input type="password" name="password" value="">
-      </td>
-    </tr>
-  </table>
+  <label>
+    Username
+  </label>
+    <input type="text" name="username" value="{{username}}" size="30">
+  <label>
+    Password
+  </label>
+    <input type="password" name="password" value="">
   <div class="error">
     {{error}}
   </div>
@@ -32,6 +22,6 @@
   New? Sign up here!
 </a>
 <a class="return" href="/">
-    Return
-  </a>
+  Return
+</a>
 {% endblock %}
