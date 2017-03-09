@@ -9,9 +9,16 @@
 
 <body>
   <div class="header-content">
-    <a href="/" class="main-title">
-      Seenit
-    </a>
+    <div class="new-post">
+      <a class="new-post-link" href="/newpost">
+        Submit New Post
+      </a>
+    </div>
+    <div class="main-title">
+      <a href="/" class="main-title">
+        Seenit
+      </a>
+    </div>
     <div class="login-area">
       {% if user %}
         {{user.name}} (<a class="login-link" href="/logout">
@@ -27,9 +34,6 @@
         </a>
       {% endif %}
     </div>
-    <a class="new-post" href="/newpost">
-      Submit New Post
-    </a>
   </div>
   <div id="content">
     {% block content %}

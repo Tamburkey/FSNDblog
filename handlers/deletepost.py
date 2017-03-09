@@ -14,7 +14,7 @@ class DeletePost(BlogHandler):
 
     def post(self, post_id):
         if not self.user:
-            self.redirect('/')
+            self.redirect('/login')
 
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)

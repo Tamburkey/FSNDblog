@@ -7,11 +7,13 @@ class DeleteComment(BlogHandler):
     def get(self, post_id, comment_id):
         key = db.Key.from_path('Comment', int(comment_id))
         comment = db.get(key)
+        if self.user.name == comment.creator:
+            self.render('deletecomment.html', comment=comment)
         # make sure comment exists
         if not comment:
             self.error(404)
             return
-        self.render('deletecomment.html', comment=comment)
+        
 
     def post(self, post_id, comment_id):
         p_key = db.Key.from_path('Post', int(post_id))
