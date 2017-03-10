@@ -5,23 +5,25 @@
   Login
 </h2>
 <form method="post">
-  <label>
+  <div>
     Username
-  </label>
+  </div>
     <input type="text" name="username" value="{{username}}" size="30">
-  <label>
+  <div>
     Password
-  </label>
+  </div>
     <input type="password" name="password" value="">
   <div class="error">
     {{error}}
   </div>
   <input type="submit">
 </form>
-<a href="/signup" class="signup">
-  New? Sign up here!
-</a>
-<a class="return" href="/">
-  Return
-</a>
+<footer>
+  <a href="/signup" class="signup">
+    New? Sign up here!
+  </a>
+  <a class="return" href="/">
+    Return
+  </a>
+</footer>
 {% endblock %}

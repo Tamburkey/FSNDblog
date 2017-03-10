@@ -5,58 +5,50 @@
     Signup
   </h2>
     <form method="post">
-      <table>
-        <tr>
-          <td class="label">
-            Username
-          </td>
-          <td>
-            <input type="text" name="username" value="{{username}}">
-          </td>
-          <td class="error">
-            {{error_username}}
-          </td>
-        </tr>
-        <tr>
-          <td class="label">
-            Password
-          </td>
-          <td>
-            <input type="password" name="password" value="">
-          </td>
-          <td class="error">
-            {{error_password}}
-          </td>
-        </tr>
-        <tr>
-          <td class="label">
-            Verify Password
-          </td>
-          <td>
-            <input type="password" name="verify" value="">
-          </td>
-          <td class="error">
-            {{error_verify}}
-          </td>
-        </tr>
-        <tr>
-          <td class="label">
-            Email (optional)
-          </td>
-          <td>
-            <input type="text" name="email" value="{{email}}">
-          </td>
-          <td class="error">
-            {{error_email}}
-          </td>
-        </tr>
-      </table>
+      <div class="label">
+        Username
+      </div>
+      <div>
+        <input type="text" name="username" value="{{username}}">
+      </div>
+      <div class="error">
+        {{error_username}}
+      </div>
+      <div class="label">
+        Password
+      </div>
+      <div>
+        <input type="password" name="password" value="">
+      </div>
+      <div class="error">
+        {{error_password}}
+      </div>
+      <div class="label">
+        Verify Password
+      </div>
+      <div>
+        <input type="password" name="verify" value="">
+      </div>
+      <div class="error">
+        {{error_verify}}
+      </div>
+      <div class="label">
+        Email (optional)
+      </div>
+      <div>
+        <input type="text" name="email" value="{{email}}">
+      </div>
+      <div class="error">
+        {{error_email}}
+      </div>
       <input type="submit">
     </form>
-    <a href="/login" class="signup">
-      Returning? Log in here!
-    </a>
-    <a class="return" href="/">
-      Return
-    </a>
+    <footer>
+      <a href="/signup" class="signup">
+        New? Sign up here!
+      </a>
+      <a class="return" href="/">
+        Return
+      </a>
+    </footer>
 {% endblock %}

@@ -8,19 +8,6 @@ body {
     color: #333;
 }
 
-.login-link {
-    color: gray;
-    text-decoration: none;
-}
-
-.login-link:visited {
-    color: gray;
-}
-
-.login-link:hover {
-    text-decoration: underline;
-}
-
 h2 {
     font-size: 24px;
     font-weight: bold;
@@ -28,28 +15,23 @@ h2 {
     text-align: center;
 }
 
-.error {
-    color: red;
-}
-
-label {
-  font-size: 20px;
-  margin-bottom: 10px;
-}
-
-label + label {
-    margin-top: 20px;
-}
 
 input[type=text] {
-    width: 90%;
+    width: 100%;
+    font-size: 20px;
+    padding: 2px;
+    font-family: monospace;
+}
+
+input[type=password] {
+    width: 100%;
     font-size: 20px;
     padding: 2px;
     font-family: monospace;
 }
 
 textarea {
-  width: 90%;
+  width: 100%;
   height: 400px;
   font-size: 17px;
   font-family: monospace;
@@ -57,6 +39,26 @@ textarea {
 
 input[type=submit] {
   font-size: 24px;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+footer {
+    padding: 5px;
+}
+
+.login-link {
+    color: gray;
+}
+
+.error {
+    color: red;
 }
 
 .post + .post {
@@ -72,27 +74,13 @@ input[type=submit] {
 .post-title {
     font-size: 24px;
     font-weight: bold;
-    text-decoration: none;
     color: green;
 }
 
 .post-date {
     color: #0b770e;
-    text-align: right;
 }
 
-.edit-date {
-    text-align: right;
-}
-
-.new-post:hover,
-.return:hover,
-.button:hover,
-.post-title:hover,
-.sub-title:hover,
-.main-title:hover {
-    text-decoration: underline;
-}
 .post-body {
     margin-top: 5px;
     margin-bottom: 10px;
@@ -107,18 +95,11 @@ input[type=submit] {
 
 .post-creator {
     color: #0b770e;
-    text-align: right;
-}
-
-.button {
-    padding: 5px;
-    text-decoration: none;
-    color: black;
 }
 
 .post {
     display: flex;
-    border-bottom: 3px solid black;
+    border-bottom: 3px solid green;
     margin-bottom: 15px;
     min-height: 95px;
 }
@@ -151,10 +132,10 @@ input[type=submit] {
     text-align: right;
     padding: 10px;
 }
+
 .comment-edit {
     text-align: right;
 }
-
 
 .input-comment {
     width:100%;
@@ -166,22 +147,12 @@ input[type=submit] {
     position: absolute;
     bottom:-15px;
     left: 10px;
-    text-decoration: none;
     padding: 5px;
     color: green;
     margin-top: 5px;
 }
 
-.signup {
-    position:absolute;
-    bottom:0px;
-    right: 0px;
-    text-decoration: none;
-    padding: 15px;
-}
-
-.delete {
-    text-decoration: none;
+.delete {;
     position:absolute;
     bottom: 15px;
     right: 30px;
@@ -202,7 +173,6 @@ input[type=submit] {
     font-size: 40px;
     font-weight: bold;
     text-align: center;
-    text-decoration: none;
     width:100%;
 }
 
@@ -219,5 +189,4 @@ input[type=submit] {
 
 .new-post-link {
     color: gray;
-    text-decoration: none;
 }
