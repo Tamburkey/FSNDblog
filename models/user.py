@@ -3,6 +3,7 @@ import hashlib
 import random
 from string import letters
 
+
 def make_salt(length=5):
     return ''.join(random.choice(letters) for x in xrange(length))
 
@@ -37,7 +38,6 @@ class User(db.Model):
     def by_name(cls, name):
         u = User.all().filter('name =', name).get()
         return u
-
 
     # hash password before storing
     @classmethod

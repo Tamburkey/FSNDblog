@@ -15,20 +15,21 @@ class EditComment(BlogHandler):
 
     def post(self, post_id, comment_id):
         comment_content = self.request.get('comment-content')
-        if comment_content:
-            key = db.Key.from_path('Comment', int(comment_id))
-            comment = db.get(key)
-            # make sure current user is comment.creator
-            if self.user.name == comment.creator:
-                comment_content = self.request.get('comment-content')
-                comment.comment = comment_content
-                comment.put()
-                self.redirect('/completed')
+        if self.user:
+            if comment_content:
+                key = db.Key.from_path('Comment', int(comment_id))
+                comment = db.get(key)
+                # make sure current user is comment.creator
+                if self.user.name == comment.creator:
+                    comment_content = self.request.get('comment-content')
+                    comment.comment = comment_content
+                    comment.put()
+                    self.redirect('/completed')
+                else:
+                    self.error(404)
+                    return
             else:
-                self.error(404)
-                return
-        else:
-            error = "Cannot leave blank comments!"
-            key = db.Key.from_path('Comment', int(comment_id))
-            comment = db.get(key)
-            self.render("editcomment.html", comment=comment, error=error)
+                error = "Cannot leave blank comments!"
+                key = db.Key.from_path('Comment', int(comment_id))
+                comment = db.get(key)
+                self.render("editcomment.html", comment=comment, error=error)

@@ -7,4 +7,3 @@ class BlogWelcome(BlogHandler):
             self.render('welcome.html', username=self.user.name)
         else:
             self.redirect('/signup')
-

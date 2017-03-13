@@ -18,5 +18,5 @@ app = webapp2.WSGIApplication([('/', BlogFront),
                                 DeleteComment),
                                ('/editcomment/([0-9]+)/([0-9]+)', EditComment),
                                ('/failed', Failed)
-                              ],
+                               ],
                               debug=True)

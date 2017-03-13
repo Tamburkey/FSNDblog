@@ -16,11 +16,11 @@ class EditPost(BlogHandler):
     def post(self, post_id):
         if not self.user:
             self.redirect('/login')
-        
+
         key = db.Key.from_path('Post', int(post_id))
         post = db.get(key)
         # make sure post exists
-        if not post:
+        if not post_exists(self, post):
             self.error(404)
             return
         # make sure current user is post.creator
@@ -38,7 +38,7 @@ class EditPost(BlogHandler):
                 key = db.Key.from_path('Post', int(post_id))
                 post = db.get(key)
                 self.render("editpost.html", p=post, subject=subject,
-                        content=content, error=error)
+                            content=content, error=error)
 
         else:
             self.error(404)

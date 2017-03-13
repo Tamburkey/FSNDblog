@@ -13,7 +13,6 @@ class DeleteComment(BlogHandler):
         if not comment:
             self.error(404)
             return
-        
 
     def post(self, post_id, comment_id):
         p_key = db.Key.from_path('Post', int(post_id))
@@ -26,5 +25,11 @@ class DeleteComment(BlogHandler):
         post.put()
         c_key = db.Key.from_path('Comment', int(comment_id))
         comment = db.get(c_key)
-        comment.delete()
-        self.redirect('/completed')
+        if self.user:
+            if comment:
+                if self.user.name == comment.creator:
+                    comment.delete()
+                    self.redirect('/completed')
+        else:
+            self.error(404)
+            return

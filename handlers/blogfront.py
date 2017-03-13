@@ -3,6 +3,7 @@ from models import Comment
 from handlers import BlogHandler
 from google.appengine.ext import db
 
+
 class BlogFront(BlogHandler):
     def get(self):
         posts = db.GqlQuery("select * from Post order by last_modified \

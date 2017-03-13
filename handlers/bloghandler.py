@@ -13,11 +13,15 @@ file = open('secret.txt', 'r')
 secret = file.read()
 
 # template rendering
+
+
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
 # create a secure value for cookies
+
+
 def make_secure_val(val):
     return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
 
@@ -27,6 +31,7 @@ def check_secure_val(secure_val):
     val = secure_val.split('|')[0]
     if secure_val == make_secure_val(val):
         return val
+
 
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -60,3 +65,5 @@ class BlogHandler(webapp2.RequestHandler):
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
 
+    def post_exists(self, post):
+        return self.key().id == post.key().id()

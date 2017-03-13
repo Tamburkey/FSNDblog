@@ -2,6 +2,7 @@ from models import User
 from models import Post
 from handlers import BlogHandler
 
+
 class NewPost(BlogHandler):
     def get(self):
         if self.user:
@@ -22,7 +23,7 @@ class NewPost(BlogHandler):
         if subject and content and creator:
             # create post
             p = Post(subject=subject, content=content,
-                        creator=creator, likes=likes)
+                     creator=creator, likes=likes)
             p.put()
             self.redirect('/%s' % str(p.key().id()))
         else:

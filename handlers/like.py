@@ -3,6 +3,7 @@ from models import Post
 from handlers import BlogHandler
 from google.appengine.ext import db
 
+
 class Like(BlogHandler):
     def get(self, post_id):
         if self.user:
@@ -15,7 +16,7 @@ class Like(BlogHandler):
             # make sure post.likes is not None
             if not post.likes:
                 post.likes = 0
-            # make sure user is not liking own post  
+            # make sure user is not liking own post
             # and hasn't already liked this post
             if self.user.key() != post.creator.key() and \
                     str(post.key().id()) not in self.user.liked:

@@ -1,5 +1,6 @@
 from google.appengine.ext import db
 
+
 class Comment(db.Model):
     comment = db.StringProperty()
     comment_post_id = db.StringProperty()
