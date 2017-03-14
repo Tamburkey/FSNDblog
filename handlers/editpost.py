@@ -8,10 +8,16 @@ class EditPost(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id))
         post = db.get(key)
-        if self.user.key() == post.creator.key():
-            self.render("editpost.html", p=post)
+        if not post:
+            self.error(404)
+            return
+        if self.user:
+            if self.user.key() == post.creator.key():
+                self.render("editpost.html", p=post)
+            else:
+                self.redirect("/failed")
         else:
-            self.redirect("/failed")
+            self.redirect('/login')
 
     def post(self, post_id):
         if not self.user:

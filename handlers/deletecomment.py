@@ -9,12 +9,19 @@ class DeleteComment(BlogHandler):
         comment = db.get(key)
         pkey = db.Key.from_path('Post', int(post_id))
         post = db.get(pkey)
-        if self.user.name == comment.creator:
-            self.render('deletecomment.html', comment=comment, p=post)
-        # make sure comment exists
         if not comment:
             self.error(404)
             return
+        if self.user:
+            if self.user.name == comment.creator:
+                self.render('deletecomment.html', comment=comment, p=post)
+            else:
+                self.error(404)
+                return
+        else:
+            self.redirect('/login')
+        # make sure comment exists
+        
 
     def post(self, post_id, comment_id):
         p_key = db.Key.from_path('Post', int(post_id))
@@ -33,5 +40,4 @@ class DeleteComment(BlogHandler):
                     comment.delete()
                     self.redirect('/completed')
         else:
-            self.error(404)
-            return
+            self.redirect('/login')

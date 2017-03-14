@@ -8,7 +8,14 @@ class DeletePost(BlogHandler):
         if self.user:
             key = db.Key.from_path('Post', int(post_id))
             post = db.get(key)
-            self.render("deletepost.html", post=post)
+            if not post:
+                self.error(404)
+                return
+            if self.user.key() == post.creator.key():
+                self.render("deletepost.html", post=post)
+            else:
+                self.error(404)
+                return
         else:
             self.redirect("/login")
 

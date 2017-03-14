@@ -13,7 +13,14 @@ class EditComment(BlogHandler):
         if not comment:
             self.error(404)
             return
-        self.render('editcomment.html', comment=comment, p=post)
+        if self.user:
+            if self.user.name == comment.creator:
+                self.render('editcomment.html', comment=comment, p=post)
+            else:
+                self.error(404)
+                return
+        else:
+            self.redirect('/login') 
 
     def post(self, post_id, comment_id):
         comment_content = self.request.get('comment-content')
@@ -21,6 +28,9 @@ class EditComment(BlogHandler):
             if comment_content:
                 key = db.Key.from_path('Comment', int(comment_id))
                 comment = db.get(key)
+                if not comment:
+                    self.error(404)
+                    return
                 # make sure current user is comment.creator
                 if self.user.name == comment.creator:
                     comment_content = self.request.get('comment-content')
